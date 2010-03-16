@@ -17,8 +17,6 @@ def self.database_id_for_hosting_id (hosting_id)
   #return the_id;
   return hosting_id
 end
-  
-
 
 def store_to_disk (upload_post_data)
     name =  upload_post_data['datafile'].original_filename; 
@@ -45,8 +43,8 @@ def store_to_disk (upload_post_data)
     #self.id = Item.database_id_for_hosting_id(hosting_id);
     
     
-    hosting_id = Item.hosting_id_for_string (self.path_to_file);
-    self.hosting_hash = Item.database_id_for_hosting_id (hosting_id).to_s;
+    hosting_id = Item.hosting_id_for_string(self.path_to_file);
+    self.hosting_hash = Item.database_id_for_hosting_id(hosting_id).to_s;
 
   #  self.user_ip = request.env['REMOTE_ADDR'];
 
@@ -54,6 +52,11 @@ def store_to_disk (upload_post_data)
     
 #   return directory.gsub("public/","") + "/" + name
     
+  end
+
+  def self.random
+      ids = connection.select_all("SELECT id FROM items")
+      find(ids[rand(ids.length)]["id"].to_i) unless ids.blank?
   end
 
 
