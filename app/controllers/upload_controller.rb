@@ -33,6 +33,19 @@ class UploadController < ApplicationController
   end
   
   def success
-    @message = "http://htlr.org/" + params[:uploadID]; 
+    @message = "http://htlr.org/" + params[:uploadID] + "\n<p>"
+    @message = @message + "Upload successful. Share your upload through this URL: "
+    @message = @message + "<a href='/" + params[:uploadID] + "'>http://htlr.org/" + params[:uploadID] + "</a>"; 
+    @message = @message + "\n<p>"
+    item = Item.find_by_hosting_hash (params[:uploadID])
+    
+    if (item.content_type.include?("image") || item.content_type.include?("img"))
+      @message = @message + "<img src='/" + item.hosting_hash + "'>"
+    else
+      @message = @message + "<a href='/" + item.hosting_hash + "'>" + item.original_filename + "</a>"
+    end
+    
+
+    
   end
 end
