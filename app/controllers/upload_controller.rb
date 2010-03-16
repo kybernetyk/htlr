@@ -46,7 +46,7 @@ class UploadController < ApplicationController
     @message = @message + "\n<p>"
     
     if (item.content_type.include?("image") || item.content_type.include?("img"))
-      @message = @message + "<img src='/" + item.hosting_hash + "'>"
+      @message = @message +  "<a href='/" + item.hosting_hash + "'>" + "<img border=0 src='/" + item.hosting_hash + "'></a>"
     else
       @message = @message + "<a href='/" + item.hosting_hash + "'>" + item.original_filename + "</a>"
     end
