@@ -28,16 +28,22 @@ class UploadController < ApplicationController
 #	render :text => "FAIL";
 #	return;
 
-   redirect_to :controller => "upload", :action => "success" , :uploadID => uid;
+   redirect_to :controller => "upload", :action => "success" , :id => uid;
     
   end
   
   def success
-    @message = "http://htlr.org/" + params[:uploadID] + "\n<p>"
+    item = Item.find_by_hosting_hash (params[:id])
+
+    if (!item)
+      render :text => "FAIL"
+      return;
+    end
+
+    @message = "http://htlr.org/" + params[:id] + "\n<p>"
     @message = @message + "Upload successful. Share your upload through this URL: "
-    @message = @message + "<a href='/" + params[:uploadID] + "'>http://htlr.org/" + params[:uploadID] + "</a>"; 
+    @message = @message + "<a href='/" + params[:id] + "'>http://htlr.org/" + params[:id] + "</a>"; 
     @message = @message + "\n<p>"
-    item = Item.find_by_hosting_hash (params[:uploadID])
     
     if (item.content_type.include?("image") || item.content_type.include?("img"))
       @message = @message + "<img src='/" + item.hosting_hash + "'>"
