@@ -36,12 +36,13 @@ class SpyController < ApplicationController
       end
       output = output + "</td>";
 
-      output = output + "<td>"
-      if (itm.hosting_hash)
-        output = output + "<img src='/" + itm.hosting_hash + "' style='max-width: 200px; max-height: 200px;'>";
+      if (nil)
+        output = output + "<td>"
+        if (itm.hosting_hash)
+          output = output + "<img src='/" + itm.hosting_hash + "' style='max-width: 200px; max-height: 200px;'>";
+        end
+        output = output + "</td>";
       end
-      output = output + "</td>";
-
       
       output = output + "</tr>"
       
