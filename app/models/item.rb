@@ -1,3 +1,6 @@
+require 'digest/sha1'
+require 'md5'
+
 class Item < ActiveRecord::Base
 
 def self.hosting_id_for_string (string_or_file)
@@ -5,9 +8,21 @@ def self.hosting_id_for_string (string_or_file)
     
     the_id = Zlib.adler32(string_or_file,0);
     puts "database id = " + the_id.to_s;
-    
-    the_id = the_id.to_s(23)
-     
+   
+	the_id = Digest::SHA1.hexdigest string_or_file 
+
+	orig_id = the_id 
+   the_id = Time.now.tv_usec.to_s(36) + (Time.now.to_i & 0x1FFFFF).to_s(36)
+
+	#check if an item with this id already exists
+	#if so return the adler32 hash code lol
+		itm = Item.find_by_hosting_hash (the_id)
+
+    if (itm != nil)
+			return orig_id 
+    end
+
+ 
     return the_id;
     
 end
