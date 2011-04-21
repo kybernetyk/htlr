@@ -12,7 +12,8 @@ class UploadController < ApplicationController
   itm = Item.new;
 
   uid = itm.store_to_disk (params[:upload]);
-  itm.uploader_ip = request.env['REMOTE_ADDR'];
+ 
+ itm.uploader_ip = request.env['REMOTE_ADDR'];
 
 
   itm.save;

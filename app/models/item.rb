@@ -4,15 +4,17 @@ require 'md5'
 class Item < ActiveRecord::Base
 
 def self.hosting_id_for_string (string_or_file)
-    require 'zlib'
+#    require 'zlib'
     
-    the_id = Zlib.adler32(string_or_file,0);
-    puts "database id = " + the_id.to_s;
+ #   the_id = Zlib.adler32(string_or_file,0);
+  #  puts "database id = " + the_id.to_s;
    
 	the_id = Digest::SHA1.hexdigest string_or_file 
 
 	orig_id = the_id 
-   the_id = Time.now.tv_usec.to_s(36) + (Time.now.to_i & 0x1FFFFF).to_s(36)
+  # the_id = Time.now.tv_usec.to_s(36) + (Time.now.to_i & 0x1FFFFF).to_s(36)
+
+	the_id = %x[./genid2 #{(self.id * 2).to_s}]
 
 	#check if an item with this id already exists
 	#if so return the adler32 hash code lol
@@ -22,7 +24,7 @@ def self.hosting_id_for_string (string_or_file)
 			return orig_id 
     end
 
- 
+
     return the_id;
     
 end
@@ -54,12 +56,18 @@ def store_to_disk (upload_post_data)
     
     self.path_to_file = path;
 
-    #hosting_id = Item.hosting_id_for_string(directory);
-    #self.id = Item.database_id_for_hosting_id(hosting_id);
-    
-    
-    hosting_id = Item.hosting_id_for_string(self.path_to_file);
-    self.hosting_hash = Item.database_id_for_hosting_id(hosting_id).to_s;
+    self.save
+   # hosting_id = Item.hosting_id_for_string(self.path_to_file);
+
+  
+	hosting_id = %x[./genid #{self.id.to_s}]  
+	itm = Item.find_by_hosting_hash (hosting_id)
+
+   if (itm != nil)
+      hosting_id = Digest::SHA1.hexdigest self.path_to_file
+    end
+
+	self.hosting_hash = Item.database_id_for_hosting_id(hosting_id).to_s;
 
   #  self.user_ip = request.env['REMOTE_ADDR'];
 
